@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: yt-stats-service
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  kafka:
+    bootstrap-servers: ${KAFKA_HOST}
+    consumer:
+      group-id: ${KAFKA_GROUP_ID}
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      auto-offset-reset: latest
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JsonDeserializer
+        spring.json.trusted.packages: "com.h3late.stats.dto"
+        spring.json.value.default.type: "com.h3late.stats.dto.VideoEventDto"
+        spring.json.use.type.headers: false
+kafka:
+  topic: ${KAFKA_TOPIC}
+server:
+  port: 8081
+youtube:
+  api-key: ${YOUTUBE_API_KEY}
+
+
