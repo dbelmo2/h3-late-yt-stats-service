@@ -2,7 +2,7 @@ spring:
   application:
     name: yt-stats-service
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    url: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:h3stats}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
@@ -13,6 +13,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  output:
+    ansi:
+      enabled: ALWAYS
   kafka:
     bootstrap-servers: ${KAFKA_HOST}
     consumer:
@@ -31,5 +34,19 @@ server:
   port: 8081
 youtube:
   api-key: ${YOUTUBE_API_KEY}
+logging:
+  level:
+    root: INFO
+    # Silence the massive config dump
+    org.apache.kafka.clients.producer.ProducerConfig: WARN
+    org.apache.kafka.common.config.AbstractConfig: WARN
+    # Silence general metadata and heartbeat noise
+    org.apache.kafka: WARN
+    # Make application logs stand out
+    com.h3late.stats: DEBUG
+  pattern:
+    console: "%clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(%5p) %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx"
+
+
 
 

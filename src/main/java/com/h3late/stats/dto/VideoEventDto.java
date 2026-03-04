@@ -11,7 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VideoEventDto {
-    private String videoId;
     private String title;
-
 }
