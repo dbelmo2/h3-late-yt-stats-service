@@ -149,6 +149,15 @@ public class KafkaConsumerService {
         newLivestream.setVideoId(videoId);
         newLivestream.setTitle(videoItem.getSnippet().getTitle());
         newLivestream.setStatus(StreamStatus.SCHEDULED);
+
+        if (liveDetails != null && liveDetails.getActualStartTime() != null) {
+            updateExistingLivestream(
+                    videoId,
+                    videoItem.getSnippet().getTitle(),
+                    videoItem,
+                    newLivestream
+            );
+        }
         return newLivestream;
     }
 
