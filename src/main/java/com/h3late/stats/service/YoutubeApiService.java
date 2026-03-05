@@ -25,7 +25,7 @@ public class YoutubeApiService {
     }
 
     public Optional<YoutubeApiResponseDto.VideoItem> getVideoDetails(String videoId) {
-        log.info("Using API key=[{}] to fetch video details for videoId=[{}]", this.apiKey, videoId);
+        log.info("Fetching video details for videoId=[{}]", videoId);
         try {
             YoutubeApiResponseDto response = this.restClient.get()
                     .uri(uriBuilder -> uriBuilder
