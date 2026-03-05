@@ -44,8 +44,10 @@ public class KafkaConsumerService {
                         log.info("Fetched livestream details for '{}' with videoId=[{}]", videoItem.getSnippet().getTitle(), videoId);
                         Optional<Livestream> existingVideo = livestreamRepository.findById(videoId);
 
-                        // Skip if not a livestream
-                        if (videoItem.getStatus().getUploadStatus().equals("processed")) {
+                        // Skip if not a livestream... scheduled VODS will have processed but will not be in our DB
+                        // This allows us to capture updates to actual livestreams that may come
+                        // after the livestream has ended... as these will have already been captured in our DB and we will update them accordingly
+                        if (videoItem.getStatus().getUploadStatus().equals("processed") && existingVideo.isEmpty()) {
                             log.info("Livestream '{}' with videoId=[{}] has status 'processed'. This is likely not a livestream", videoItem.getSnippet().getTitle(), videoId);
                             return;
                         }
