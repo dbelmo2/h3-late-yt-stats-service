@@ -23,6 +23,7 @@ public class Livestream {
     private Instant actualEnd;
     private Long diffSeconds;
     private Long totalDurationSeconds;
+
     @Enumerated(EnumType.STRING)
     private StreamStatus status;
     @Enumerated(EnumType.STRING)
