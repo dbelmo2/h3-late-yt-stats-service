@@ -9,10 +9,12 @@ services:
       DB_NAME: ${DB_NAME:-h3stats}
       DB_USER: ${DB_USER:-h3admin}
       DB_PASSWORD: ${DB_PASSWORD:-h3password}
+      DB_URL: jdbc:postgresql://${DB_HOST:db}:${DB_PORT:5432}/${DB_NAME:h3stats}
       KAFKA_HOST: ${KAFKA_HOST:-kafka:29092}
       KAFKA_GROUP_ID: ${KAFKA_GROUP_ID:-yt-stats-group}
       KAFKA_TOPIC: ${KAFKA_TOPIC:-youtube-events}
       YOUTUBE_API_KEY: ${YOUTUBE_API_KEY:-my_default_api_key}
+
     depends_on:
       - db
     networks:
