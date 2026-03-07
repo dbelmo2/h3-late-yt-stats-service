@@ -1,5 +1,6 @@
 package com.h3late.stats.controller;
 
+import com.h3late.stats.dto.StatsSummaryProjection;
 import com.h3late.stats.entity.Livestream;
 import com.h3late.stats.entity.StreamStatus;
 import com.h3late.stats.entity.TimeStatus;
@@ -36,5 +37,10 @@ class LivestreamController {
             @PageableDefault(size = 20, sort = "scheduledStart") Pageable pageable
     ) {
         return ResponseEntity.ok(livestreamService.searchLivestreams(status, timeStatus, pageable));
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<StatsSummaryProjection> getGlobalStats() {
+        return ResponseEntity.ok(livestreamService.getGlobalStats());
     }
 }

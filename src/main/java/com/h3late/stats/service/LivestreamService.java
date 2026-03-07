@@ -1,5 +1,6 @@
 package com.h3late.stats.service;
 
+import com.h3late.stats.dto.StatsSummaryProjection;
 import com.h3late.stats.dto.VideoEventDto;
 import com.h3late.stats.dto.YoutubeApiResponseDto;
 import com.h3late.stats.entity.Livestream;
@@ -184,5 +185,9 @@ public class LivestreamService {
         } else {
             log.info("No existing livestream found for videoId=[{}] to mark as cancelled.", videoId);
         }
+    }
+
+    public StatsSummaryProjection getGlobalStats() {
+        return livestreamRepository.getGlobalStats();
     }
 }
