@@ -43,4 +43,9 @@ class LivestreamController {
     public ResponseEntity<StatsSummaryProjection> getGlobalStats() {
         return ResponseEntity.ok(livestreamService.getGlobalStats());
     }
+
+    @GetMapping("/stats/day")
+    public ResponseEntity<?> getStatsByDay() {
+        return ResponseEntity.ok(livestreamService.getStatsByDay());
+    }
 }

@@ -1,6 +1,7 @@
 
 package com.h3late.stats.repository;
 
+import com.h3late.stats.dto.StatsByDayProjection;
 import com.h3late.stats.dto.StatsSummaryProjection;
 import com.h3late.stats.entity.Livestream;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,9 @@ import java.util.Optional;
 
 @Repository
 public interface LivestreamRepository extends JpaRepository<Livestream, String>, JpaSpecificationExecutor<Livestream> {
-    @Query(value = "SELECT * FROM h3_stats_summary", nativeQuery = true)
+    @Query(value = "SELECT * FROM h3_global_stats", nativeQuery = true)
     StatsSummaryProjection getGlobalStats();
+
+    @Query(value = "SELECT * FROM h3_stats_by_day", nativeQuery = true)
+    List<StatsByDayProjection> getStatsByDay();
 }

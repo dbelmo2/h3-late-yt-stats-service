@@ -1,5 +1,6 @@
 package com.h3late.stats.service;
 
+import com.h3late.stats.dto.StatsByDayProjection;
 import com.h3late.stats.dto.StatsSummaryProjection;
 import com.h3late.stats.dto.VideoEventDto;
 import com.h3late.stats.dto.YoutubeApiResponseDto;
@@ -15,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -189,5 +191,9 @@ public class LivestreamService {
 
     public StatsSummaryProjection getGlobalStats() {
         return livestreamRepository.getGlobalStats();
+    }
+
+    public List<StatsByDayProjection> getStatsByDay() {
+        return livestreamRepository.getStatsByDay();
     }
 }
