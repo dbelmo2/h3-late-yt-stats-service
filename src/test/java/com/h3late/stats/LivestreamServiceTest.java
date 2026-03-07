@@ -131,7 +131,7 @@ public class LivestreamServiceTest {
         when(livestreamRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
 
         // Act
-        Page<Livestream> result = livestreamService.searchLivestreams(null, null, pageable);
+        Page<Livestream> result = livestreamService.searchLivestreams(null, null, null, pageable);
 
         // Assert
         assertEquals(2, result.getTotalElements());
@@ -150,7 +150,7 @@ public class LivestreamServiceTest {
         when(livestreamRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
 
         // Act
-        Page<Livestream> result = livestreamService.searchLivestreams(StreamStatus.LIVE, null, pageable);
+        Page<Livestream> result = livestreamService.searchLivestreams(StreamStatus.LIVE, null, null, pageable);
 
         // Assert
         assertEquals(1, result.getTotalElements());
@@ -170,7 +170,7 @@ public class LivestreamServiceTest {
         when(livestreamRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
 
         // Act
-        Page<Livestream> result = livestreamService.searchLivestreams(null, TimeStatus.LATE, pageable);
+        Page<Livestream> result = livestreamService.searchLivestreams(null, TimeStatus.LATE, null, pageable);
 
         // Assert
         assertEquals(1, result.getTotalElements());
@@ -190,7 +190,7 @@ public class LivestreamServiceTest {
         when(livestreamRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(page);
 
         // Act
-        Page<Livestream> result = livestreamService.searchLivestreams(StreamStatus.ENDED, TimeStatus.ON_TIME, pageable);
+        Page<Livestream> result = livestreamService.searchLivestreams(StreamStatus.ENDED, TimeStatus.ON_TIME, null, pageable);
 
         // Assert
         assertEquals(1, result.getTotalElements());
@@ -208,7 +208,7 @@ public class LivestreamServiceTest {
         when(livestreamRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(emptyPage);
 
         // Act
-        Page<Livestream> result = livestreamService.searchLivestreams(StreamStatus.CANCELLED, null, pageable);
+        Page<Livestream> result = livestreamService.searchLivestreams(StreamStatus.CANCELLED, null, null, pageable);
 
         // Assert
         assertEquals(0, result.getTotalElements());
