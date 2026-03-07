@@ -26,10 +26,10 @@ public interface LivestreamRepository extends JpaRepository<Livestream, String>,
     List<StatsByDayProjection> getStatsByDay();
 
     @Query("SELECT l FROM Livestream l WHERE " +
-            "(l.status = :status OR :status IS NULL) AND " +
-            "(l.timeStatus = :timeStatus OR :timeStatus IS NULL) AND " +
-            "(:search IS NULL OR LOWER(l.title) LIKE LOWER(CONCAT('%', :search, '%')) " +
-            "OR LOWER(l.videoId) LIKE LOWER(CONCAT('%', :search, '%')))")
+            "(:status IS NULL OR l.status = :status) AND " +
+            "(:timeStatus IS NULL OR l.timeStatus = :timeStatus) AND " +
+            "(:search IS NULL OR LOWER(l.title) LIKE LOWER(CONCAT('%', CAST(:search AS string), '%')) " +
+            "OR l.videoId LIKE CONCAT('%', CAST(:search AS string), '%'))")
     Page<Livestream> searchAdvanced(
             @Param("status") StreamStatus status,
             @Param("timeStatus") TimeStatus timeStatus,
