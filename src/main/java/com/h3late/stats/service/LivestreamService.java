@@ -26,20 +26,8 @@ public class LivestreamService {
     private final LivestreamRepository livestreamRepository;
     private final YoutubeApiService youtubeApiService;
 
-    public Page<Livestream> searchLivestreams(
-            StreamStatus status,
-            TimeStatus timeStatus,
-            Pageable pageable
-    ) {
-
-        Specification<Livestream> spec = (root, query, cb) -> cb.conjunction();
-        if (status != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), status));
-        }
-        if (timeStatus != null) {
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("timeStatus"), timeStatus));
-        }
-        return livestreamRepository.findAll(spec, pageable);
+    public Page<Livestream> searchLivestreams(StreamStatus status, TimeStatus timeStatus, String search, Pageable pageable) {
+        return livestreamRepository.searchAdvanced(status, timeStatus, search, pageable);
     }
 
     public Optional<Livestream> getLivestreamById(String id) {
@@ -196,4 +184,5 @@ public class LivestreamService {
     public List<StatsByDayProjection> getStatsByDay() {
         return livestreamRepository.getStatsByDay();
     }
+
 }

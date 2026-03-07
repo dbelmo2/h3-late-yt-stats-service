@@ -8,6 +8,7 @@ import com.h3late.stats.service.LivestreamService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,9 +35,10 @@ class LivestreamController {
     public ResponseEntity<Page<Livestream>> searchLivestreams(
             @RequestParam(required = false) StreamStatus status,
             @RequestParam(required = false) TimeStatus timeStatus,
-            @PageableDefault(size = 20, sort = "scheduledStart") Pageable pageable
+            @RequestParam(required = false) String search, // New parameter
+            @PageableDefault(size = 20, sort = "scheduledStart", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(livestreamService.searchLivestreams(status, timeStatus, pageable));
+        return ResponseEntity.ok(livestreamService.searchLivestreams(status, timeStatus, search, pageable));
     }
 
     @GetMapping("/stats")
@@ -48,4 +50,6 @@ class LivestreamController {
     public ResponseEntity<?> getStatsByDay() {
         return ResponseEntity.ok(livestreamService.getStatsByDay());
     }
+
+
 }
