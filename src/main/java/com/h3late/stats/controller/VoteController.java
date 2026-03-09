@@ -10,7 +10,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/votes")
+@RequestMapping("/api/vote")
 public class VoteController {
 
     private final VoteService voteService;
