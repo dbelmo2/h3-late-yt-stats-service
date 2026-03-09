@@ -3,6 +3,10 @@ package com.h3late.stats.controller;
 import com.h3late.stats.entity.LeaderboardEntry;
 import com.h3late.stats.entity.Vote;
 import com.h3late.stats.service.VoteService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,8 +32,10 @@ public class VoteController {
 
 
     @GetMapping("/leaderboard/latest")
-    public ResponseEntity<List<LeaderboardEntry>> getLatestLeaderboard() {
-        // This pulls from the SQL view we created
-        return ResponseEntity.ok(voteService.getLatestLeaderboard());
+    public ResponseEntity<Page<LeaderboardEntry>> getLatestLeaderboard(
+            @PageableDefault(size = 10, sort = "proximityScore", direction = Sort.Direction.ASC)
+            Pageable pageable) {
+
+        return ResponseEntity.ok(voteService.getLatestLeaderboard(pageable));
     }
 }

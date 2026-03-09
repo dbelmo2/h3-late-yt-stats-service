@@ -7,6 +7,8 @@ import com.h3late.stats.entity.Vote;
 import com.h3late.stats.repository.LeaderboardRepository;
 import com.h3late.stats.repository.LivestreamRepository;
 import com.h3late.stats.repository.VoteRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,7 +45,9 @@ public class VoteService {
         return voteRepository.save(voteRequest);
     }
 
-    public List<LeaderboardEntry> getLatestLeaderboard() {
-        return leaderboardRepository.findAll();
+    public Page<LeaderboardEntry> getLatestLeaderboard(Pageable pageable) {
+        return leaderboardRepository.findAll(pageable);
     }
+
+
 }

@@ -15,10 +15,9 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "https://h3late.com",
-                                "https://www.h3late.com",
-                                "*" // Keep this for local dev testing
+                        .allowedOriginPatterns(
+                                "https://*.h3late.com",
+                                "https://h3late.com"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*");
