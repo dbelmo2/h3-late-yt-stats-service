@@ -14,10 +14,15 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(@NonNull CorsRegistry registry) {
-                registry.addMapping("/**") // Apply to all endpoints
-                        .allowedOrigins("*") // Allow all domains
+                registry.addMapping("/**")
+                        .allowedOrigins(
+                                "https://h3late.com",
+                                "https://www.h3late.com",
+                                "*" // Keep this for local dev testing
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
