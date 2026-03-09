@@ -21,8 +21,7 @@ public class CorsConfig {
                                 "*" // Keep this for local dev testing
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowedHeaders("*");
             }
         };
     }
