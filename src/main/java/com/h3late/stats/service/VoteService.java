@@ -45,9 +45,11 @@ public class VoteService {
         return voteRepository.save(voteRequest);
     }
 
-    public Page<LeaderboardEntry> getLatestLeaderboard(Pageable pageable) {
-        return leaderboardRepository.findAll(pageable);
+    public Page<LeaderboardEntry> getLatestLeaderboard(String search, Pageable pageable) {
+        return leaderboardRepository.searchLeaderboard(search, pageable);
     }
+
+
 
 
 }

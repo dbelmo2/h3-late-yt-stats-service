@@ -33,9 +33,12 @@ public class VoteController {
 
     @GetMapping("/leaderboard/latest")
     public ResponseEntity<Page<LeaderboardEntry>> getLatestLeaderboard(
+            @RequestParam(required = false) String search, // Add optional search param
             @PageableDefault(size = 10, sort = "proximityScore", direction = Sort.Direction.ASC)
             Pageable pageable) {
 
-        return ResponseEntity.ok(voteService.getLatestLeaderboard(pageable));
+        // Pass the search string to the service
+        return ResponseEntity.ok(voteService.getLatestLeaderboard(search, pageable));
     }
+
 }
