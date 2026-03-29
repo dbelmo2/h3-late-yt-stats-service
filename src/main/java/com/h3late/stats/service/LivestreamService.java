@@ -191,8 +191,8 @@ public class LivestreamService {
      * Processes a video by videoId, fetching all details from YouTube API
      * Similar to processLivestreamEvent but without relying on Kafka message body
      */
-    public void processVideoById(String videoId) {
-        log.info("Processing video by ID: {}", videoId);
+    public void processVideoById(String videoId, boolean bypassCheck) {
+        log.info("Processing video by ID: {} (bypassCheck: {})", videoId, bypassCheck);
         
         youtubeApiService.getVideoDetails(videoId)
                 .ifPresentOrElse(
@@ -203,7 +203,7 @@ public class LivestreamService {
                         // Skip if not a livestream... scheduled VODS will have processed but will not be in our DB
                         // This allows us to capture updates to actual livestreams that may come
                         // after the livestream has ended... as these will have already been captured in our DB, and we will update them accordingly
-                        if (videoItem.getStatus().getUploadStatus().equals("processed") && existingVideo.isEmpty()) {
+                        if (!bypassCheck && videoItem.getStatus().getUploadStatus().equals("processed") && existingVideo.isEmpty()) {
                             log.info("Livestream '{}' with videoId=[{}] has status 'processed'. This is likely not a livestream", videoItem.getSnippet().getTitle(), videoId);
                             return;
                         }
@@ -229,13 +229,13 @@ public class LivestreamService {
      * Processes multiple videos by their videoIds, fetching all details from YouTube API
      * Returns a map with video ID as key and processing result as value
      */
-    public Map<String, String> processVideosByIds(List<String> videoIds) {
+    public Map<String, String> processVideosByIds(List<String> videoIds, boolean bypassCheck) {
         Map<String, String> results = new HashMap<>();
         
         for (String videoId : videoIds) {
             try {
-                log.info("Processing video ID: {}", videoId);
-                processVideoById(videoId);
+                log.info("Processing video ID: {} (bypassCheck: {})", videoId, bypassCheck);
+                processVideoById(videoId, bypassCheck);
                 results.put(videoId, "SUCCESS");
             } catch (Exception e) {
                 log.error("Failed to process video ID {}: {}", videoId, e.getMessage(), e);
@@ -243,7 +243,7 @@ public class LivestreamService {
             }
         }
         
-        log.info("Batch processing completed. Processed {} videos", videoIds.size());
+        log.info("Batch processing completed. Processed {} videos (bypassCheck: {})", videoIds.size(), bypassCheck);
         return results;
     }
 

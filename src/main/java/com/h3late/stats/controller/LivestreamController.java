@@ -58,7 +58,9 @@ class LivestreamController {
 
     // Process video(s) by videoId(s) - accepts comma-separated list - fetches all details from YouTube API
     @PostMapping("/process/{videoIds}")
-    public ResponseEntity<Map<String, Object>> processVideos(@PathVariable String videoIds) {
+    public ResponseEntity<Map<String, Object>> processVideos(
+            @PathVariable String videoIds,
+            @RequestParam(defaultValue = "false") boolean bypassCheck) {
         try {
             // Parse comma-separated video IDs
             String[] videoIdArray = videoIds.split(",");
@@ -74,10 +76,11 @@ class LivestreamController {
                 return ResponseEntity.badRequest().body(errorResponse);
             }
             
-            Map<String, String> results = livestreamService.processVideosByIds(videoIdList);
+            Map<String, String> results = livestreamService.processVideosByIds(videoIdList, bypassCheck);
             
             Map<String, Object> response = new HashMap<>();
             response.put("totalRequested", videoIdList.size());
+            response.put("bypassCheck", bypassCheck);
             response.put("results", results);
             
             long successCount = results.values().stream().mapToLong(status -> "SUCCESS".equals(status) ? 1 : 0).sum();
