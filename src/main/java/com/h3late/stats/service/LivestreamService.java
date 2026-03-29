@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
+import java.util.Map;
+import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -183,6 +185,66 @@ public class LivestreamService {
 
     public List<StatsByDayProjection> getStatsByDay() {
         return livestreamRepository.getStatsByDay();
+    }
+
+    /**
+     * Processes a video by videoId, fetching all details from YouTube API
+     * Similar to processLivestreamEvent but without relying on Kafka message body
+     */
+    public void processVideoById(String videoId) {
+        log.info("Processing video by ID: {}", videoId);
+        
+        youtubeApiService.getVideoDetails(videoId)
+                .ifPresentOrElse(
+                    (videoItem) -> {
+                        log.info("Fetched livestream details for '{}' with videoId=[{}]", videoItem.getSnippet().getTitle(), videoId);
+                        Optional<Livestream> existingVideo = livestreamRepository.findById(videoId);
+
+                        // Skip if not a livestream... scheduled VODS will have processed but will not be in our DB
+                        // This allows us to capture updates to actual livestreams that may come
+                        // after the livestream has ended... as these will have already been captured in our DB, and we will update them accordingly
+                        if (videoItem.getStatus().getUploadStatus().equals("processed") && existingVideo.isEmpty()) {
+                            log.info("Livestream '{}' with videoId=[{}] has status 'processed'. This is likely not a livestream", videoItem.getSnippet().getTitle(), videoId);
+                            return;
+                        }
+
+                        if (existingVideo.isPresent()) {
+                            // Update if livestream already exists - use title from YouTube API
+                            updateExistingLivestream(
+                                    videoId,
+                                    videoItem.getSnippet().getTitle(),
+                                    videoItem,
+                                    existingVideo.get()
+                            );
+                        } else {
+                            // Create new livestream if it doesn't exist
+                            createNewLivestream(videoId, videoItem);
+                        }
+                    },
+                    () -> log.warn("Could not fetch video details for videoId=[{}] from YouTube API", videoId)
+                );
+    }
+
+    /**
+     * Processes multiple videos by their videoIds, fetching all details from YouTube API
+     * Returns a map with video ID as key and processing result as value
+     */
+    public Map<String, String> processVideosByIds(List<String> videoIds) {
+        Map<String, String> results = new HashMap<>();
+        
+        for (String videoId : videoIds) {
+            try {
+                log.info("Processing video ID: {}", videoId);
+                processVideoById(videoId);
+                results.put(videoId, "SUCCESS");
+            } catch (Exception e) {
+                log.error("Failed to process video ID {}: {}", videoId, e.getMessage(), e);
+                results.put(videoId, "ERROR: " + e.getMessage());
+            }
+        }
+        
+        log.info("Batch processing completed. Processed {} videos", videoIds.size());
+        return results;
     }
 
 }

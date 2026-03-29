@@ -14,6 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/livestream")
@@ -51,5 +56,40 @@ class LivestreamController {
         return ResponseEntity.ok(livestreamService.getStatsByDay());
     }
 
+    // Process video(s) by videoId(s) - accepts comma-separated list - fetches all details from YouTube API
+    @PostMapping("/process/{videoIds}")
+    public ResponseEntity<Map<String, Object>> processVideos(@PathVariable String videoIds) {
+        try {
+            // Parse comma-separated video IDs
+            String[] videoIdArray = videoIds.split(",");
+            List<String> videoIdList = Arrays.stream(videoIdArray)
+                    .map(String::trim)
+                    .filter(id -> !id.isEmpty())
+                    .collect(Collectors.toList());
+            
+            if (videoIdList.isEmpty()) {
+                Map<String, Object> errorResponse = new HashMap<>();
+                errorResponse.put("error", "No valid video IDs provided");
+                errorResponse.put("totalProcessed", 0);
+                return ResponseEntity.badRequest().body(errorResponse);
+            }
+            
+            Map<String, String> results = livestreamService.processVideosByIds(videoIdList);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("totalRequested", videoIdList.size());
+            response.put("results", results);
+            
+            long successCount = results.values().stream().mapToLong(status -> "SUCCESS".equals(status) ? 1 : 0).sum();
+            response.put("successCount", successCount);
+            response.put("failureCount", videoIdList.size() - successCount);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Error processing videos: " + e.getMessage());
+            return ResponseEntity.internalServerError().body(errorResponse);
+        }
+    }
 
 }
